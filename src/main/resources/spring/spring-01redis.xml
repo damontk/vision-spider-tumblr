@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <!-- redis config start -->
+    <!-- redis pool config -->
+    <bean id="genericObjectPoolConfig" class="org.apache.commons.pool2.impl.GenericObjectPoolConfig">
+        <property name="maxTotal" value="${redis.maxActive}"/>
+        <property name="maxIdle" value="${redis.maxIdle}"/>
+        <property name="maxWaitMillis" value="${redis.maxWaitMillis}"/>
+        <!--<property name="testOnBorrow" value="${redis.testOnBorrow}"/>-->
+    </bean>
+    <!-- jedisCluster config -->
+    <!--<bean id="jedisCluster" class="redis.clients.jedis.JedisCluster">-->
+    <!--<constructor-arg index="0">-->
+    <!--<set>-->
+    <!--<bean class="redis.clients.jedis.HostAndPort">-->
+    <!--<constructor-arg type="String" value="${redis.host1}"/>-->
+    <!--<constructor-arg type="int" value="${redis.port1}"/>-->
+    <!--</bean>-->
+    <!--&lt;!&ndash;<bean class="redis.clients.jedis.HostAndPort">&ndash;&gt;-->
+    <!--&lt;!&ndash;<constructor-arg type="String" value="${redis.host2}"/>&ndash;&gt;-->
+    <!--&lt;!&ndash;<constructor-arg type="int" value="${redis.port2}"/>&ndash;&gt;-->
+    <!--&lt;!&ndash;</bean>&ndash;&gt;-->
+    <!--</set>-->
+    <!--</constructor-arg>-->
+    <!--<constructor-arg index="1" ref="genericObjectPoolConfig"/>-->
+    <!--</bean>-->
+
+    <bean id="redisClient" class="redis.clients.jedis.JedisPool">
+        <constructor-arg name="poolConfig" ref="genericObjectPoolConfig"/>
+        <constructor-arg name="host" value="${redis.host1}"/>
+        <constructor-arg name="port" value="${redis.port1}"/>
+        <constructor-arg name="timeout" value="${redis.timeout}"/>
+        <!--<constructor-arg name="password" value="${redis.pwd}"/>-->
+    </bean>
+
+    <!--<bean id="blogCache" class="com.vision.cache.BlogCache">-->
+        <!--<constructor-arg name="jedisPool" ref="redisClient"/>-->
+    <!--</bean>-->
+
+
+</beans>

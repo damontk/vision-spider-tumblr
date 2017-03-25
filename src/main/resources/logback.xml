@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 日志组件启动时，打印调试信息，并监控此文件变化，周期60秒 -->
+<configuration scan="true" scanPeriod="60 seconds" debug="true">
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d %-4relative [%thread] %-5level %logger{35} - %msg %n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="INFOFILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!-- <file>${catalina.base}/logs/tssc.log</file> -->
+        <file>${catalina.base}/logs/vision/vision.info.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- daily rollover -->
+            <fileNamePattern>${catalina.base}/logs/vision/vision.info.%d{yyyy-MM-dd}.%i.log.zip</fileNamePattern>
+            <TimeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <MaxFileSize>1024MB</MaxFileSize>
+            </TimeBasedFileNamingAndTriggeringPolicy>
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d %-4relative [%thread] %-5level %logger{35} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="WARNFILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!-- <file>${catalina.base}/logs/tssc.log</file> -->
+        <file>${catalina.base}/logs/vision/vision.warn.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- daily rollover -->
+            <fileNamePattern>${catalina.base}/logs/vision/vision.warn.%d{yyyy-MM-dd}.%i.log.zip</fileNamePattern>
+            <TimeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <MaxFileSize>1024MB</MaxFileSize>
+            </TimeBasedFileNamingAndTriggeringPolicy>
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d %-4relative [%thread] %-5level %logger{35} - %msg%n</pattern>
+        </encoder>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>WARN</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+    </appender>
+
+    <appender name="ERRORFILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+	    <file>${catalina.base}/logs/vision/vision.error.log</file>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- daily rollover -->
+            <fileNamePattern>${catalina.base}/logs/vision/vision.error.%d{yyyy-MM-dd}.%i.log.zip</fileNamePattern>
+            <TimeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <MaxFileSize>100MB</MaxFileSize>
+            </TimeBasedFileNamingAndTriggeringPolicy>
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+	    <encoder>
+	        <pattern>%d %-4relative [%thread] %-5level %logger{35} - %msg%n</pattern>
+	    </encoder>
+	    <filter class="ch.qos.logback.classic.filter.LevelFilter"><!-- 只打印错误日志 -->
+	        <level>ERROR</level>
+	        <onMatch>ACCEPT</onMatch>
+	        <onMismatch>DENY</onMismatch>
+	    </filter>
+	</appender>
+
+    <!-- mongodb错误日志
+    <appender name="MONGODB_ERROR" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        &lt;!&ndash; <file>${catalina.base}/logs/tssc.log</file> &ndash;&gt;
+        <file>${catalina.base}/logs/vision/vision.mongodb.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            &lt;!&ndash; daily rollover &ndash;&gt;
+            <fileNamePattern>${catalina.base}/logs/vision.mongodb.%d{yyyy-MM-dd}.%i.log.zip</fileNamePattern>
+            <TimeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <MaxFileSize>100MB</MaxFileSize>
+            </TimeBasedFileNamingAndTriggeringPolicy>
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d %-4relative [%thread] %-5level %logger{35} - %msg%n</pattern>
+        </encoder>
+    </appender>
+    <logger name="com.cst.collection.userbehaviorcollection.biz.impl.CollectDataBizImpl" level="ERROR" additivity="true">
+        <appender-ref ref="MONGODB_ERROR" />
+    </logger> -->
+
+    <root level="INFO">
+        <appender-ref ref="INFOFILE"/>
+        <appender-ref ref="WARNFILE"/>
+        <appender-ref ref="ERRORFILE"/>
+        <appender-ref ref="STDOUT"/>
+    </root>
+</configuration>

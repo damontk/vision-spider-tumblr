@@ -1,0 +1,20 @@
+#parse("/admin/common/header-title.vm")
+<link rel="stylesheet" href="${ctxStatic}/css/style.css"/>
+
+<body>
+<div class="frm-content frm-bottom">
+    <div class="page-box" id="uploadFile" style="height:100px">
+    </div>
+</div>
+
+<script>
+    var file_url = '${ctx}/backstage/upload/saveFile.htm';
+    seajs.use(['jquery', 'yrkj/jquery.yrkj.dialog','yrkj/jquery.yrkj.page.callback','yrkj/jquery.yrkj.message','yrkj/jquery.yrkj.upload_file'],
+            function($,Ydialog,CALLBACK,YUI_MESSAGE_CLIENT,Y_UPLOAD_FILE){
+                $(function() {
+                    $('#uploadFile').UPLOAD_FILE({auto:false,multiple:false,progress_bar:false,url_address:file_url,ext:'.docx,.xls'});
+                });
+                //end seajs
+            });
+</script>
+</body>
