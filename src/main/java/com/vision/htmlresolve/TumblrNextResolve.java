@@ -21,6 +21,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
@@ -58,6 +59,9 @@ public class TumblrNextResolve {
 
     @Resource
     private DownVideoExecutorPool executorPool;
+
+    @Value("${needDown}")
+    private Boolean needDown;
 
     /**
      * 获取视频url连接
@@ -135,7 +139,8 @@ public class TumblrNextResolve {
             TumblrVideoEntity videoEntity = new TumblrVideoEntity();
             videoEntity.setDownBlogUrl(blogEntity.getUrl());
             videoEntity.setUrl(videoUrl);
-            if (videoCache.put(videoUrl, videoEntity)) {
+            // if (videoCache.put(videoUrl, videoEntity) && needDown) {
+            if (needDown) {
                 //获取到视频地址后  往线程添加下载任务
                 logger.info("获取到视频地址 向下载线程添加下载任务 url:{}", videoUrl);
                 // 线程数大于100  该线程休眠 5分钟

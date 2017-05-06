@@ -38,9 +38,11 @@
         <constructor-arg name="timeout" value="${redis.timeout}"/>
         <!--<constructor-arg name="password" value="${redis.pwd}"/>-->
     </bean>
-
+    <bean class="com.vision.util.redis.single.RedisDao">
+        <constructor-arg name="jedisPool" ref="redisClient"/>
+    </bean>
     <!--<bean id="blogCache" class="com.vision.cache.BlogCache">-->
-        <!--<constructor-arg name="jedisPool" ref="redisClient"/>-->
+    <!--<constructor-arg name="jedisPool" ref="redisClient"/>-->
     <!--</bean>-->
 
 
