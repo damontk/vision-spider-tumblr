@@ -6,9 +6,9 @@ import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Maps;
 import com.vision.constant.TumblrElementConstant;
 import com.vision.constant.TumblrUrlConstant;
-import com.vision.util.http.CookieUtil;
-import com.vision.util.http.HttpRequestDao;
 import com.vision.util.http.exception.LoginFailedException;
+import com.vision.util.http.util.CookieUtil;
+import com.vision.util.http.util.HttpRequestDao;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jsoup.Jsoup;
@@ -19,8 +19,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
+import org.springframework.util.ResourceUtils;
 
 import javax.annotation.Resource;
+import java.io.File;
 import java.util.Map;
 
 /**

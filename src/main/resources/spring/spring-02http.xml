@@ -12,9 +12,10 @@
         <constructor-arg name="socketTimeOut" value="${socketTimeOut}"/>
         <constructor-arg name="connectTimeOut" value="${connectTimeOut}"/>
         <constructor-arg name="requestTimeOut" value="${requestTimeOut}"/>
+        <constructor-arg name="BEST_MATCH" value="BEST_MATCH"/>
     </bean>
 
-    <bean id="tumblrHttpRequestDao" class="com.vision.util.http.HttpRequestDao">
+    <bean id="tumblrHttpRequestDao" class="com.vision.util.http.util.HttpRequestDao">
         <constructor-arg ref="tumblrHttpFactory"/>
     </bean>
 </beans>

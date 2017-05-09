@@ -6,7 +6,7 @@ import com.vision.entity.EntityValue;
 import com.vision.entity.TumblrBlogEntity;
 import com.vision.htmlresolve.TumblrHtmlResolve;
 import com.vision.htmlresolve.TumblrNextResolve;
-import com.vision.util.http.HttpRequestDao;
+import com.vision.util.http.util.HttpRequestDao;
 import org.apache.commons.collections.CollectionUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -60,7 +60,7 @@ public class BlogStart {
         try {
             logger.info("请求博客 url:{}", url);
             String firstPage = tumblrHttpRequestDao.getWebPage(url);
-            tumblrNextResolve.putCacheAndMq(TumblrHtmlResolve.getTumblrUrls(firstPage));
+            // tumblrNextResolve.putCacheAndMq(TumblrHtmlResolve.getTumblrUrls(firstPage));
             Document fistPageDocument = Jsoup.parse(firstPage);
             int totalPage = TumblrHtmlResolve.getTotalPage(fistPageDocument);
             TumblrBlogEntity blogEntity = EntityValue.setBlogEntityValue(url, totalPage);

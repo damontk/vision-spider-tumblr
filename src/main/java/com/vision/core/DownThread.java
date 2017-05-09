@@ -4,8 +4,8 @@ import com.google.common.io.Files;
 import com.google.common.net.MediaType;
 import com.vision.constant.DownStatusEnum;
 import com.vision.entity.TumblrVideoEntity;
-import com.vision.util.http.HttpRequestDao;
 import com.vision.util.http.exception.FileTypeException;
+import com.vision.util.http.util.HttpRequestDao;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpStatus;
@@ -70,12 +70,11 @@ public class DownThread implements Callable<TumblrVideoEntity> {
             logger.info("下载文件地址:{}", url);
             CloseableHttpResponse response = httpRequestDao.getResponse(url);
             // String fileName = url;
-            String fileName = url.substring(url.lastIndexOf("/tumblr_") + 1, url.length());
             int statusCode = response.getStatusLine().getStatusCode();
             HttpEntity entity = response.getEntity();
             content = entity.getContent();
             if (statusCode == HttpStatus.SC_OK) {
-                this.generateFile(content, entity.getContentType(), fileName);
+                this.generateFile(content, entity.getContentType(), videoEntity.getFileName());
             } else {
                 logger.error("下载错误 url:{} status:{}", url, statusCode);
                 videoEntity.setStatusEnum(DownStatusEnum.FILED_UNDEFINED);

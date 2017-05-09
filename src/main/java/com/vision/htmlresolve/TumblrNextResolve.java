@@ -11,8 +11,8 @@ import com.vision.entity.EntityValue;
 import com.vision.entity.TumblrBlogEntity;
 import com.vision.entity.TumblrVideoEntity;
 import com.vision.mq.RedisMqPut;
-import com.vision.util.http.HttpRequestDao;
 import com.vision.util.http.exception.RequestDeniedException;
+import com.vision.util.http.util.HttpRequestDao;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jsoup.Jsoup;
@@ -139,22 +139,18 @@ public class TumblrNextResolve {
             TumblrVideoEntity videoEntity = new TumblrVideoEntity();
             videoEntity.setDownBlogUrl(blogEntity.getUrl());
             videoEntity.setUrl(videoUrl);
-            // if (videoCache.put(videoUrl, videoEntity) && needDown) {
-            if (needDown) {
-                //获取到视频地址后  往线程添加下载任务
-                logger.info("获取到视频地址 向下载线程添加下载任务 url:{}", videoUrl);
-                // 线程数大于100  该线程休眠 5分钟
-                if (executorPool.getThreadCount() == 10) {
-
+            videoEntity.setBlogName(blogName);
+            videoEntity.setFileName(videoUrl.substring(videoUrl.lastIndexOf("/tumblr_") + 1, videoUrl.length()));
+            if (videoCache.put(videoUrl, videoEntity) && needDown) {
+                if (needDown) {
+                    //获取到视频地址后  往线程添加下载任务
                     logger.info("线程满载 循环获取下载线程数量 小于线程池核定数量:{} 再继续爬取。。。", executorPool.getNThread());
-                    while (executorPool.getThreadCount() == executorPool.getNThread()) {
+                    while (executorPool.getThreadCount() >= executorPool.getNThread()) {
                         sleepSomeTime(1000 * 20);
-                        if (executorPool.getThreadCount() < 10) {
-                            break;
-                        }
                     }
+                    logger.info("获取到视频地址 向下载线程添加下载任务 url:{}", videoUrl);
+                    executorPool.putDownVideoTask(new DownThread(videoEntity, reDownPath, tumblrHttpRequestDao));
                 }
-                executorPool.putDownVideoTask(new DownThread(videoEntity, reDownPath, tumblrHttpRequestDao));
             } else {
                 logger.warn("缓存中已经存在该视频  过滤下载.....");
             }

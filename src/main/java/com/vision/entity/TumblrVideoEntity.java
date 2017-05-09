@@ -22,6 +22,16 @@ public class TumblrVideoEntity {
     private String url;
 
     /**
+     * 文件名
+     */
+    private String fileName;
+
+    /**
+     * 下载的博客名称
+     */
+    private String blogName;
+
+    /**
      * iframe地址
      */
     private String iframeUrl;
@@ -47,6 +57,22 @@ public class TumblrVideoEntity {
 
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    public String getFileName() {
+        return fileName;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+    }
+
+    public String getBlogName() {
+        return blogName;
+    }
+
+    public void setBlogName(String blogName) {
+        this.blogName = blogName;
     }
 
     public String getIframeUrl() {

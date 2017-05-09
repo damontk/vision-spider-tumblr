@@ -1,6 +1,7 @@
 package com.vision;
 
 import com.vision.core.TumblrStart;
+import com.vision.gyfcat.UploadFiled;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
@@ -26,18 +27,11 @@ public class Main {
                 .valueOf(10000)); // （单位：毫秒
         System.setProperty("https.protocols", "TLSv1.1");
         ApplicationContext factory = new ClassPathXmlApplicationContext(
-                "/spring/spring-01redis.xml", "/spring/spring-02beans.xml", "/spring/spring-03http.xml");
-        TumblrStart tumblrStart = (TumblrStart) factory.getBean("tumblrStart");
-        // TumblrNextResolve tumblrNexResolve = (TumblrNextResolve) factory.getBean("tumblrNextResolve");
-        // tumblrNexResolve.putCacheAndMq(Sets.newHashSet("http://8989892.tumblr.com/","http://82989892.tumblr.com/"));
-        tumblrStart.start();
-
-        // System.out.println(MediaType.parse("video/mp4").is(MediaType.ANY_VIDEO_TYPE));
-
-
-        // Map<String,String> map = new HashMap<>();
-        // map = null;
-        // map.isEmpty();
+                "/spring/spring-01redis.xml", "/spring/spring-02http.xml", "/spring/spring-03beans.xml");
+        // TumblrStart tumblrStart = (TumblrStart) factory.getBean("tumblrStart");
+        // tumblrStart.start();
+        UploadFiled uploadFiled = (UploadFiled) factory.getBean("uploadFiled");
+        uploadFiled.upload(null);
 
     }
 
