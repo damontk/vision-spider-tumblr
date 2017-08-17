@@ -1,6 +1,7 @@
 package com.vision.entity;
 
 import com.vision.constant.DownStatusEnum;
+import com.vision.util.http.down.AbsDownEntity;
 
 /**
  * 项目名称：vision
@@ -14,17 +15,7 @@ import com.vision.constant.DownStatusEnum;
  *
  * @version 1.0
  */
-public class TumblrVideoEntity {
-
-    /**
-     * 视频url
-     */
-    private String url;
-
-    /**
-     * 文件名
-     */
-    private String fileName;
+public class TumblrVideoEntity extends AbsDownEntity{
 
     /**
      * 下载的博客名称
@@ -50,22 +41,6 @@ public class TumblrVideoEntity {
      * 是否下载完成
      */
     private DownStatusEnum statusEnum;
-
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
-    }
-
-    public String getFileName() {
-        return fileName;
-    }
-
-    public void setFileName(String fileName) {
-        this.fileName = fileName;
-    }
 
     public String getBlogName() {
         return blogName;

@@ -2,9 +2,8 @@ package com.vision.gyfcat;
 
 import com.alibaba.fastjson.JSONObject;
 import com.vision.entity.TumblrVideoEntity;
-import com.vision.util.http.exception.RequestFailedException;
 import com.vision.util.http.util.HttpRequestDao;
-import org.apache.http.Header;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -28,8 +27,8 @@ public class UploadFiled {
     @Resource
     private HttpRequestDao httpRequestDao;
 
-    @Resource
-    private TokenSingleton tokenSingleton;
+//    @Resource
+//    private TokenSingleton tokenSingleton;
 
 
     public void upload(TumblrVideoEntity entity) {
@@ -41,15 +40,30 @@ public class UploadFiled {
         jsonObject.put("title", "test");
         jsonObject.put("private", true);
         jsonObject.put("noMd5", 1);
-        tokenSingleton.init();
-        try {
-            Header authorization = tokenSingleton.getAuthorization();
-            System.out.println(authorization.getName() + ":" + authorization.getValue());
-            String s = httpRequestDao.postRequestJson(VIDEO_UPLOAD_API, jsonObject.toJSONString(), null, tokenSingleton.getAuthorization());
+//        tokenSingleton.init();
+//        try {
+//
+//            Header authorization = tokenSingleton.getAuthorization();
+//            System.out.println(authorization.getName() + ":" + authorization.getValue());
+////            String s = httpRequestDao.postRequestJson(VIDEO_UPLOAD_API, jsonObject.toJSONString(), null, tokenSingleton.getAuthorization());
+//
+////            System.out.println(s);
+//        } catch (RequestFailedException e) {
+//            e.printStackTrace();
+//        }
+    }
 
-            System.out.println(s);
-        } catch (RequestFailedException e) {
-            e.printStackTrace();
+    public static void main(String[] args) {
+        String src = "www.asdfhaf.com/wejhfasdf.jep";
+        String fileName = "";
+        if (src.endsWith("/")) {
+            src = src.substring(0, src.length() - 1);
         }
+        fileName = src.substring(StringUtils.lastIndexOf(src, "/") + 1, src.length());
+        int i = StringUtils.lastIndexOf(fileName, ".");
+        if (i > -1) {
+            fileName = fileName.substring(0, i);
+        }
+        System.out.println(fileName);
     }
 }

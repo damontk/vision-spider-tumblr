@@ -5,12 +5,12 @@ import com.vision.cache.BlogCache;
 import com.vision.cache.VideoCache;
 import com.vision.constant.TumblrElementConstant;
 import com.vision.constant.TumblrEnum;
-import com.vision.core.DownThread;
-import com.vision.core.DownVideoExecutorPool;
 import com.vision.entity.EntityValue;
 import com.vision.entity.TumblrBlogEntity;
 import com.vision.entity.TumblrVideoEntity;
 import com.vision.mq.RedisMqPut;
+import com.vision.util.http.down.thread.DownThread;
+import com.vision.util.http.down.thread.DownVideoExecutorPool;
 import com.vision.util.http.exception.RequestDeniedException;
 import com.vision.util.http.util.HttpRequestDao;
 import org.apache.commons.collections.CollectionUtils;
@@ -58,7 +58,7 @@ public class TumblrNextResolve {
     private HttpRequestDao tumblrHttpRequestDao;
 
     @Resource
-    private DownVideoExecutorPool executorPool;
+    private DownVideoExecutorPool<TumblrVideoEntity> executorPool;
 
     @Value("${needDown}")
     private Boolean needDown;
@@ -144,12 +144,12 @@ public class TumblrNextResolve {
             if (videoCache.put(videoUrl, videoEntity) && needDown) {
                 if (needDown) {
                     //获取到视频地址后  往线程添加下载任务
-                    logger.info("线程满载 循环获取下载线程数量 小于线程池核定数量:{} 再继续爬取。。。", executorPool.getNThread());
                     while (executorPool.getThreadCount() >= executorPool.getNThread()) {
+                        logger.info("线程满载 等待中.. 线程数:{}", executorPool.getNThread());
                         sleepSomeTime(1000 * 20);
                     }
                     logger.info("获取到视频地址 向下载线程添加下载任务 url:{}", videoUrl);
-                    executorPool.putDownVideoTask(new DownThread(videoEntity, reDownPath, tumblrHttpRequestDao));
+                    executorPool.putDownVideoTask(new DownThread<>(videoEntity, reDownPath), false);
                 }
             } else {
                 logger.warn("缓存中已经存在该视频  过滤下载.....");

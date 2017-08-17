@@ -19,7 +19,8 @@
         <!--<property name="tumblrNextResolve" ref="tumblrNextResolve"/>-->
         <!--<property name="blogStart" ref="blogStart"/>-->
     </bean>
-    <bean class="com.vision.core.DownVideoExecutorPool">
-        <constructor-arg name="nThreads" value="${nThreads}"/>
+    <bean class="com.vision.util.http.down.thread.DownVideoExecutorPool">
+        <constructor-arg name="nThreads" value="${threadPoolCount}"/>
+        <constructor-arg name="name" value="${threadPoolName}"/>
     </bean>
 </beans>

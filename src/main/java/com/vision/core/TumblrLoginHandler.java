@@ -65,7 +65,7 @@ public class TumblrLoginHandler {
     private void validateAccount(String userName, String pwd) throws Exception {
         Map<String, String> param = Maps.newHashMap();
         // 获取 form_key
-        String webPage = tumblrHttpRequestDao.getWebPage(TumblrUrlConstant.TUMBLR_LOGIN_URL);
+        String webPage = tumblrHttpRequestDao.getWebPage("https://www.baidu.com");
         // 解析html 获取对象参数
         Document parse = Jsoup.parse(webPage);
         Elements loginFormClass = parse.getElementsByClass(TumblrElementConstant.LOGIN_FORM_CLASS);
@@ -81,7 +81,7 @@ public class TumblrLoginHandler {
         //转换json
         Assert.notNull(valAccount, "用户名验证出错！tumblr未返回参数");
         JSONObject validateObj = JSON.parseObject(valAccount);
-        Assert.notNull("汤不热登录方式发生变更,如需帮助请反馈,email:zhong_ch@foxmail.com");
+        Assert.notNull(validateObj, "汤不热登录方式发生变更,如需帮助请反馈,email:zhong_ch@foxmail.com");
         JSONArray errors = (JSONArray) validateObj.get(TumblrElementConstant.ERRORS);
         // 如果返回参数有 errors 为 并且不为空 说明用户名验证出错  用户名不存在
         if (CollectionUtils.isNotEmpty(errors)) {

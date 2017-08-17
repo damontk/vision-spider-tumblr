@@ -1,7 +1,6 @@
 package com.vision;
 
 import com.vision.core.TumblrStart;
-import com.vision.gyfcat.UploadFiled;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
@@ -28,10 +27,10 @@ public class Main {
         System.setProperty("https.protocols", "TLSv1.1");
         ApplicationContext factory = new ClassPathXmlApplicationContext(
                 "/spring/spring-01redis.xml", "/spring/spring-02http.xml", "/spring/spring-03beans.xml");
-        // TumblrStart tumblrStart = (TumblrStart) factory.getBean("tumblrStart");
-        // tumblrStart.start();
-        UploadFiled uploadFiled = (UploadFiled) factory.getBean("uploadFiled");
-        uploadFiled.upload(null);
+        TumblrStart tumblrStart = (TumblrStart) factory.getBean("tumblrStart");
+        tumblrStart.start();
+//        UploadFiled uploadFiled = (UploadFiled) factory.getBean("uploadFiled");
+//        uploadFiled.upload(null);
 
     }
 
