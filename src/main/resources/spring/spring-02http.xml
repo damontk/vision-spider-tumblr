@@ -6,13 +6,13 @@
         http://www.springframework.org/schema/beans/spring-beans.xsd
         http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
-    <bean id="tumblrHttpFactory" class="com.vision.util.http.HttpFactory2" init-method="init">
+    <bean id="tumblrHttpFactory" class="com.vision.util.http.HttpFactory" init-method="init">
         <constructor-arg name="proxyIp" value="${proxyIp}"/>
         <constructor-arg name="proxyPort" value="${proxyPort}"/>
         <constructor-arg name="socketTimeOut" value="${socketTimeOut}"/>
         <constructor-arg name="connectTimeOut" value="${connectTimeOut}"/>
         <constructor-arg name="requestTimeOut" value="${requestTimeOut}"/>
-        <constructor-arg name="BEST_MATCH" value="BEST_MATCH"/>
+        <constructor-arg name="BEST_MATCH" value="STANDARD_STRICT"/>
     </bean>
 
     <bean id="tumblrHttpRequestDao" class="com.vision.util.http.util.HttpRequestDao">
