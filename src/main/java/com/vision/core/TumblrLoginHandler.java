@@ -7,12 +7,11 @@ import com.google.common.collect.Maps;
 import com.vision.constant.TumblrElementConstant;
 import com.vision.constant.TumblrUrlConstant;
 import com.vision.util.http.exception.LoginFailedException;
+import com.vision.util.http.util.CookieUtil;
 import com.vision.util.http.util.HttpRequestDao;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.Header;
-import org.apache.http.client.CookieStore;
-import org.apache.http.impl.cookie.BasicClientCookie;
 import org.apache.http.message.BasicHeader;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -20,10 +19,14 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.PathResource;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
 import javax.annotation.Resource;
+import java.io.IOException;
+import java.nio.file.Path;
 import java.util.Map;
 
 /**
@@ -50,9 +53,6 @@ public class TumblrLoginHandler {
     private String pwd;
 
     @Resource
-    private Login login;
-
-    @Resource
     private HttpRequestDao tumblrHttpRequestDao;
 
 
@@ -60,13 +60,13 @@ public class TumblrLoginHandler {
         this.userName = userName;
         this.pwd = pwd;
         this.cookiePath = cookiePath;
-//        if (!CookieUtil.deserializeCookieStore(tumblrHttpRequestDao.getHttpClientContext(), cookiePath)) {
-        this.validateAccount(userName, pwd);
-//        }
+        if (!CookieUtil.deserializeCookieStore(tumblrHttpRequestDao.getHttpClientContext(), cookiePath)) {
+            this.validateAccount();
+        }
 
     }
 
-    private void validateAccount(String userName, String pwd) throws Exception {
+    private void validateAccount() throws Exception {
         Map<String, String> param = Maps.newHashMap();
         // 获取 form_key
         String webPage = tumblrHttpRequestDao.getWebPage(TumblrUrlConstant.TUMBLR_LOGIN_URL);
@@ -81,24 +81,9 @@ public class TumblrLoginHandler {
             }
             if (name.equals("Set-Cookie") && value.startsWith("tmgioct")) {
                 tmgioct = value.substring(value.indexOf("tmgioct=") + "tmgioct=".length(), value.length());
+                tmgioct = tmgioct.substring(0, tmgioct.indexOf(";"));
             }
         }
-        CookieStore cookieStore = tumblrHttpRequestDao.getHttpClientContext().getCookieStore();
-        cookieStore.addCookie(new BasicClientCookie("__utma", "189990958.1779491099.1503044334.1503044334.1503044334.1"));
-        cookieStore.addCookie(new BasicClientCookie("__utmb", "189990958.0.10.1503044334"));
-        cookieStore.addCookie(new BasicClientCookie("__utmc", "189990958"));
-        cookieStore.addCookie(new BasicClientCookie("_ga", "GA1.2.1779491099.1503044334"));
-        cookieStore.addCookie(new BasicClientCookie("_gid", "GA1.2.429192934.1503044334"));
-        cookieStore.addCookie(new BasicClientCookie("anon_id", "OEJBLYMCMJQGLVDGIOMJVKQILMVZDXUG"));
-        cookieStore.addCookie(new BasicClientCookie("devicePixelRatio", "undefined"));
-        cookieStore.addCookie(new BasicClientCookie("documentWidth", "1008"));
-        cookieStore.addCookie(new BasicClientCookie("pfl", pfl));
-        cookieStore.addCookie(new BasicClientCookie("rxx", "1asuf61ghaj.tpb6ry0&v=1"));
-        cookieStore.addCookie(new BasicClientCookie("tmgioct", tmgioct));
-        cookieStore.addCookie(new BasicClientCookie("yx", "GA1.2.429192934.1503044334"));
-//        tumblrHttpRequestDao.getHttpClientContext().setCookieStore(cookieStore);
-
-//        tumblrHttpRequestDao.serializeObject(tumblrHttpRequestDao.getHttpClientContext().getCookieStore(), cookiePath);
         // 解析html 获取对象参数
         Document parse = Jsoup.parse(webPage);
         Elements loginFormClass = parse.getElementsByClass(TumblrElementConstant.LOGIN_FORM_CLASS);
@@ -110,8 +95,9 @@ public class TumblrLoginHandler {
         }
         param.put(TumblrElementConstant.USER_NAME, userName);
         LoginFormParams(param, false, userName, pwd);
-        String cookie = "tmgioct=5996c330ba4ee40918385470; _ga=GA1.2.1779491099.1503044334; _gid=GA1.2.429192934.1503044334; __utma=189990958.1779491099.1503044334.1503044334.1503044372.2; __utmb=189990958.0.10.1503044372; __utmc=189990958; __utmz=189990958.1503044334.1.1.utmcsr=(direct)|utmccn=(direct)|utmcmd=(none); rxx=1asuf61ghaj.tpb6ry0&v=1; pfl=NzA1NDBhYjJjNmVkMjYzZTBkZjE5ZGRmYzdlYmQ3MmI4MGViMDcxMzk5MTQyMTMyZGE2YmM4ZmE0OGMxZmU4ZSxua2R0dGhiM2NhNHQyZDJhNTNyZDJoN3hjOGJoMnQ5diwxNTAzMDUyNTky; devicePixelRatio=undefined; documentWidth=1920; yx=9x00prcpcq8as%26o%3D3%26f%3Dv6; anon_id=OEJBLYMCMJQGLVDGIOMJVKQILMVZDXUG";
+        String cookie = "pfl=" + pfl + "; devicePixelRatio=undefined; documentWidth=1008; yx=9x00prcpcq8as%26o%3D3%26f%3Dv6; anon_id=QWCLDPSQEZKNJCSLQCXPQKUJUHHTBKYV; tmgioct=" + tmgioct + "; _ga=GA1.2.1779491099.1503044334; _gid=GA1.2.1021956581.1503281564; __utma=189990958.1779491099.1503044334.1503044372.1503281564.3; __utmb=189990958.0.10.1503281564; __utmz=189990958.1503044334.1.1.utmcsr=(direct)|utmccn=(direct)|utmcmd=(none); rxx=1asuf61ghaj.tpb6ry0&v=1; __utmc=189990958";
         BasicHeader header = new BasicHeader("Cookie", cookie);
+
         String valAccount = tumblrHttpRequestDao.postRequest(TumblrUrlConstant.VALIDATE_ACCOUNT_URL, param, header);
         //转换json
         Assert.notNull(valAccount, "用户名验证出错！tumblr未返回参数");
@@ -122,40 +108,25 @@ public class TumblrLoginHandler {
         if (CollectionUtils.isNotEmpty(errors)) {
             throw new LoginFailedException("用户名不存在！");
         } else {
-//            validatePwd(userName, pwd, param);
-            login.validatePwd(userName, pwd, param, cookiePath);
+            this.validatePwd(userName, pwd, param, cookiePath, header);
             //
         }
 
     }
 
-    /**
-     * 验证密码
-     *
-     * @param userName 用户名
-     * @param pwd      密码
-     * @param param    form表单参数
-     * @throws LoginFailedException 密码错误 抛出异常
-     */
-    private void validatePwd(String userName, String pwd, Map<String, String> param) throws Exception {
+    public void validatePwd(String userName, String pwd, Map<String, String> param, String cookiePath, Header... headers) throws Exception {
         //执行登录操作
         LoginFormParams(param, true, userName, pwd);
         //执行登录操作
-//        List<BasicHeader> basicHeaders = DefaultHeaders.getBasicHeaders();
-        String loginResult = tumblrHttpRequestDao.postRequest(TumblrUrlConstant.TUMBLR_LOGIN_URL, param);
-
-
-//        Map<String, Object> stringObjectMap = tumblrHttpRequestDao.postResponse(TumblrUrlConstant.TUMBLR_LOGIN_URL, param);
-//        CloseableHttpResponse response = (CloseableHttpResponse) stringObjectMap.get("response");
-
+        String loginResult = tumblrHttpRequestDao.postRequest(TumblrUrlConstant.TUMBLR_LOGIN_URL, param, headers);
 
 //        // 登录成功 tumblr status为 302 无返回数据
         if (!"".equals(loginResult)) {
             throw new LoginFailedException("密码错误!");
         }
-        logger.info("用户:{}登录成功!", userName);
+//        logger.info("用户:{}登录成功!", userName);
         if (StringUtils.isNotBlank(cookiePath)) {
-            tumblrHttpRequestDao.serializeObject(tumblrHttpRequestDao.getHttpClientContext().getCookieStore(), cookiePath);
+            CookieUtil.serializeObject(tumblrHttpRequestDao.getHttpClientContext().getCookieStore(), cookiePath);
         }
         //登陆成功后 跳转登陆成功后的网站
         //等待

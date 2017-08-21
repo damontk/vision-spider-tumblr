@@ -108,7 +108,7 @@ public class TumblrNextResolve {
             throw new RequestDeniedException("访问博客喜欢列表错误未获取到权限,url:" + url);
         }
         videoUrlList.addAll(TumblrHtmlResolve.getVideoUrl(firstHtml));
-        // 获取该页面的博客值并将其加入到缓存、列队中
+        // 获取该页面的博客值并将其加入到缓存列队
         this.putCacheAndMq(TumblrHtmlResolve.getTumblrUrls(firstHtml));
         String nextHref = getNextPage(firstHtml);
         boolean hasNext = nextHref != null;
