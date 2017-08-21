@@ -19,14 +19,10 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.PathResource;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
 import javax.annotation.Resource;
-import java.io.IOException;
-import java.nio.file.Path;
 import java.util.Map;
 
 /**
@@ -70,7 +66,7 @@ public class TumblrLoginHandler {
         Map<String, String> param = Maps.newHashMap();
         // 获取 form_key
         String webPage = tumblrHttpRequestDao.getWebPage(TumblrUrlConstant.TUMBLR_LOGIN_URL);
-        Header[] headers = HttpRequestDao.getAllHeaders();
+        Header[] headers = tumblrHttpRequestDao.getResponseHeaders();
         String pfl = "";
         String tmgioct = "";
         for (Header header : headers) {
