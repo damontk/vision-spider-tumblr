@@ -128,7 +128,7 @@ public class TumblrNextResolve {
     }
 
 
-    public void delVideo(TumblrBlogEntity blogEntity, String downPath, Set<String> videoUrList, TumblrEnum tumblrEnum) {
+    public void dealVideo(TumblrBlogEntity blogEntity, String downPath, Set<String> videoUrList, TumblrEnum tumblrEnum) {
 
         String blogName = blogEntity.getBlogName();
         String reDownPath;

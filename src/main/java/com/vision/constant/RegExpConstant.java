@@ -23,4 +23,5 @@ public class RegExpConstant {
      * tumblr 地址匹配
      */
     public static final  String TUMBLR_REGEX = "[htps]+://[A-Za-z0-9]*((\\w+)(\\.tumblr.com/))";
+    public static final  String TUMBLR_REGEX1 = "http://.*.gan003.com.*.mp4/";
 }

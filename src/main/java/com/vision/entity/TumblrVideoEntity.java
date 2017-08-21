@@ -37,11 +37,6 @@ public class TumblrVideoEntity extends AbsDownEntity{
      */
     private String sourceBlogUrl;
 
-    /**
-     * 是否下载完成
-     */
-    private DownStatusEnum statusEnum;
-
     public String getBlogName() {
         return blogName;
     }
@@ -74,11 +69,4 @@ public class TumblrVideoEntity extends AbsDownEntity{
         this.sourceBlogUrl = sourceBlogUrl;
     }
 
-    public DownStatusEnum getStatusEnum() {
-        return statusEnum;
-    }
-
-    public void setStatusEnum(DownStatusEnum statusEnum) {
-        this.statusEnum = statusEnum;
-    }
 }

@@ -31,7 +31,7 @@ public abstract class AbsCache<T> implements ICache<T> {
     public boolean put(String key, T value) {
         boolean putSuccess = false;
         if (!this.containsKey(key)) {
-            cluster.hmset(key, new MapHelper<String>().putBeansToMap(value));
+            cluster.hmset(key, new MapHelper<T, String, String>().putBeansToMap(value));
             putSuccess = true;
         }
         return putSuccess;

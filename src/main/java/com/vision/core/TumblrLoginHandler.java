@@ -56,9 +56,9 @@ public class TumblrLoginHandler {
         this.userName = userName;
         this.pwd = pwd;
         this.cookiePath = cookiePath;
-        if (!CookieUtil.deserializeCookieStore(tumblrHttpRequestDao.getHttpClientContext(), cookiePath)) {
+        // if (!CookieUtil.deserializeCookieStore(tumblrHttpRequestDao.getHttpClientContext(), cookiePath)) {
             this.validateAccount();
-        }
+        // }
 
     }
 

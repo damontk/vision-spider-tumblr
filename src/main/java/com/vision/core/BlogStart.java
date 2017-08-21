@@ -1,15 +1,21 @@
 package com.vision.core;
 
 import com.vision.cache.BlogCache;
+import com.vision.constant.TumblrElementConstant;
 import com.vision.constant.TumblrEnum;
+import com.vision.constant.TumblrUrlConstant;
 import com.vision.entity.EntityValue;
 import com.vision.entity.TumblrBlogEntity;
 import com.vision.htmlresolve.TumblrHtmlResolve;
 import com.vision.htmlresolve.TumblrNextResolve;
+import com.vision.util.http.exception.RequestDeniedException;
+import com.vision.util.http.exception.RequestFailedException;
 import com.vision.util.http.util.HttpRequestDao;
 import org.apache.commons.collections.CollectionUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -40,8 +46,6 @@ public class BlogStart {
     private final Logger logger = LoggerFactory.getLogger(BlogStart.class);
 
 
-    private String downPath;
-
     /**
      * blog cache
      */
@@ -53,6 +57,55 @@ public class BlogStart {
 
     @Resource
     private HttpRequestDao tumblrHttpRequestDao;
+
+    private String downPath;
+
+    /**
+     * 通过时间节点直接获取博客信息
+     */
+    public void archiveStart(String url, String downPath) {
+        this.downPath = downPath;
+        try {
+            if (url.endsWith("/")) {
+                url = url.substring(0, url.length() - 1);
+            }
+            String realUrl;
+            realUrl = url + TumblrUrlConstant.TUMBLR_ARCHIVE;
+            Element nextPageURL = archiveNextEach(url, realUrl);
+            while (nextPageURL != null) {
+                String nextPage = url + nextPageURL.attr(TumblrElementConstant.ATTR_HREF);
+                this.archiveNextEach(url, nextPage);
+            }
+
+        } catch (RequestFailedException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    /**
+     * archive 下一页循环
+     *
+     * @param realUrl
+     * @return
+     * @throws RequestFailedException
+     */
+    private Element archiveNextEach(String url, String realUrl) throws RequestFailedException {
+        String firstPage = tumblrHttpRequestDao.getWebPage(realUrl);
+        Document parse = Jsoup.parse(firstPage);
+        Elements videoDivs = parse.getElementsByClass(TumblrElementConstant.ARCHIVE_DIV_CLASS_IS_VIDEO);
+        Element nextPageURL = parse.getElementById(TumblrElementConstant.DIV_ID_NEXT_PAGE);
+        for (Element videoDiv : videoDivs) {
+            Elements tagAs = videoDiv.getElementsByTag(TumblrElementConstant.TAG_A);
+            if (CollectionUtils.isNotEmpty(tagAs)) {
+                String videoUrl = tagAs.get(0).attr(TumblrElementConstant.ATTR_HREF);
+                String realHtml = tumblrHttpRequestDao.getWebPage(videoUrl);
+                TumblrBlogEntity blogEntity = EntityValue.setBlogEntityValue(url, -1);
+                eachFrame(TumblrHtmlResolve.getIFrameUrlList(Jsoup.parse(realHtml)), blogEntity);
+            }
+        }
+        return nextPageURL;
+    }
 
 
     public void start(String url, String downPath) {
@@ -71,14 +124,25 @@ public class BlogStart {
             eachBlog(url, totalPage, blogEntity);
             //关注列表
             tumblrNextResolve.getBlogUrlSet(blogEntity.getBlogName(), TumblrEnum.FOlLOW);
-            //喜欢列表
-            Set<String> likedVideoSet = tumblrNextResolve.getLikedVideoSet(blogEntity.getBlogName(), TumblrEnum.LIKE);
-            tumblrNextResolve.delVideo(blogEntity, downPath, likedVideoSet, TumblrEnum.LIKE);
-
+            blogLiked(downPath, blogEntity);
 
         } catch (Exception e) {
             logger.error("获取博客信息异常:{},", e);
         }
+    }
+
+    /**
+     * 获取喜欢列表 拿到视频信息并加入缓存
+     *
+     * @param downPath
+     * @param blogEntity
+     * @throws RequestFailedException
+     * @throws RequestDeniedException
+     */
+    private void blogLiked(String downPath, TumblrBlogEntity blogEntity) throws RequestFailedException, RequestDeniedException {
+        //喜欢列表
+        Set<String> likedVideoSet = tumblrNextResolve.getLikedVideoSet(blogEntity.getBlogName(), TumblrEnum.LIKE);
+        tumblrNextResolve.dealVideo(blogEntity, downPath, likedVideoSet, TumblrEnum.LIKE);
     }
 
     /**
@@ -128,7 +192,7 @@ public class BlogStart {
                 // 视频地址
                 Set<String> videoUrList = TumblrHtmlResolve.getVideoUrl(framePage);
                 if (CollectionUtils.isNotEmpty(videoUrList)) {
-                    tumblrNextResolve.delVideo(blogEntity, downPath, videoUrList, TumblrEnum.BLOG_HOST);
+                    tumblrNextResolve.dealVideo(blogEntity, downPath, videoUrList, TumblrEnum.BLOG_HOST);
                 } else {
                     logger.warn("未获取到视频地址  博客地址:{},iframe地址:{}", followsUrl, nextFrameUrl);
                 }
