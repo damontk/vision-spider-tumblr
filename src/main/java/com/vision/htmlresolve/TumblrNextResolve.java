@@ -1,6 +1,7 @@
 package com.vision.htmlresolve;
 
 import com.google.common.collect.Sets;
+import com.google.common.net.MediaType;
 import com.vision.cache.BlogCache;
 import com.vision.cache.VideoCache;
 import com.vision.constant.TumblrElementConstant;
@@ -9,9 +10,10 @@ import com.vision.entity.EntityValue;
 import com.vision.entity.TumblrBlogEntity;
 import com.vision.entity.TumblrVideoEntity;
 import com.vision.mq.RedisMqPut;
-import com.vision.util.http.down.thread.DownThread;
+import com.vision.util.http.down.thread.DownThread2;
 import com.vision.util.http.down.thread.DownVideoExecutorPool;
 import com.vision.util.http.exception.RequestDeniedException;
+import com.vision.util.http.exception.RequestFailedException;
 import com.vision.util.http.util.HttpRequestDao;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
@@ -71,7 +73,7 @@ public class TumblrNextResolve {
      * @param blogName   博客名称  前缀
      * @param tumblrEnum 类型
      */
-    public void getBlogUrlSet(String blogName, TumblrEnum tumblrEnum) throws Exception {
+    public void getBlogUrlSet(String blogName, TumblrEnum tumblrEnum) throws RequestFailedException, RequestDeniedException {
         String url = getBlogUrls(blogName, tumblrEnum);
         Set<String> urlList = Sets.newHashSet();
         //第一次进入的(关注列表第一页)
@@ -96,7 +98,7 @@ public class TumblrNextResolve {
         this.putCacheAndMq(urlList);
     }
 
-    public Set<String> getLikedVideoSet(String blogName, TumblrEnum tumblrEnum) throws Exception {
+    public Set<String> getLikedVideoSet(String blogName, TumblrEnum tumblrEnum) throws RequestFailedException, RequestDeniedException {
         String url = getBlogUrls(blogName, tumblrEnum);
         Set<String> videoUrlList = Sets.newHashSet();
         //第一次进入的(喜欢列表第一页)
@@ -126,7 +128,7 @@ public class TumblrNextResolve {
     }
 
 
-    public void addVideoCache(TumblrBlogEntity blogEntity, String downPath, Set<String> videoUrList, TumblrEnum tumblrEnum) {
+    public void delVideo(TumblrBlogEntity blogEntity, String downPath, Set<String> videoUrList, TumblrEnum tumblrEnum) {
 
         String blogName = blogEntity.getBlogName();
         String reDownPath;
@@ -142,15 +144,13 @@ public class TumblrNextResolve {
             videoEntity.setBlogName(blogName);
             videoEntity.setFileName(videoUrl.substring(videoUrl.lastIndexOf("/tumblr_") + 1, videoUrl.length()));
             if (videoCache.put(videoUrl, videoEntity) && needDown) {
-                if (needDown) {
-                    //获取到视频地址后  往线程添加下载任务
-                    while (executorPool.getThreadCount() >= executorPool.getNThread()) {
-                        logger.info("线程满载 等待中.. 线程数:{}", executorPool.getNThread());
-                        sleepSomeTime(1000 * 20);
-                    }
-                    logger.info("获取到视频地址 向下载线程添加下载任务 url:{}", videoUrl);
-                    executorPool.putDownVideoTask(new DownThread<>(videoEntity, reDownPath), false);
+                //获取到视频地址后  往线程添加下载任务
+                while (executorPool.getThreadCount() >= executorPool.getNThread()) {
+                    logger.info("线程满载 等待中.. 线程数:{}", executorPool.getNThread());
+                    sleepSomeTime(1000 * 20);
                 }
+                logger.info("获取到视频地址 向下载线程添加下载任务 url:{}", videoUrl);
+                executorPool.putDownVideoTask(new DownThread2<>(videoEntity, reDownPath, null, MediaType.ANY_VIDEO_TYPE), false);
             } else {
                 logger.warn("缓存中已经存在该视频  过滤下载.....");
             }
@@ -161,7 +161,8 @@ public class TumblrNextResolve {
         try {
             Thread.sleep(i);
         } catch (InterruptedException e) {
-            logger.error("睡眠失败:{}", e);
+            logger.error("睡眠失败!");
+            Thread.currentThread().interrupt();
         }
     }
 

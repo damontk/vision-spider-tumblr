@@ -69,7 +69,7 @@ public class TumblrStart extends Thread {
             TumblrBlogEntity entity = new TumblrBlogEntity();
             entity.setBlogName("loginUser");
             entity.setUrl(TumblrUrlConstant.TUMBLR_HOST);
-            tumblrNextResolve.addVideoCache(entity, downPath, likedVideoSet, TumblrEnum.HOST);
+            tumblrNextResolve.delVideo(entity, downPath, likedVideoSet, TumblrEnum.HOST);
             logger.info("获取喜欢列表结束....");
             // 本博客爬完 开始爬取其它博客列表
             int count = 0;

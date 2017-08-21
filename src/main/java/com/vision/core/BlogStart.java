@@ -73,7 +73,7 @@ public class BlogStart {
             tumblrNextResolve.getBlogUrlSet(blogEntity.getBlogName(), TumblrEnum.FOlLOW);
             //喜欢列表
             Set<String> likedVideoSet = tumblrNextResolve.getLikedVideoSet(blogEntity.getBlogName(), TumblrEnum.LIKE);
-            tumblrNextResolve.addVideoCache(blogEntity, downPath, likedVideoSet, TumblrEnum.LIKE);
+            tumblrNextResolve.delVideo(blogEntity, downPath, likedVideoSet, TumblrEnum.LIKE);
 
 
         } catch (Exception e) {
@@ -128,7 +128,7 @@ public class BlogStart {
                 // 视频地址
                 Set<String> videoUrList = TumblrHtmlResolve.getVideoUrl(framePage);
                 if (CollectionUtils.isNotEmpty(videoUrList)) {
-                    tumblrNextResolve.addVideoCache(blogEntity, downPath, videoUrList, TumblrEnum.BLOG_HOST);
+                    tumblrNextResolve.delVideo(blogEntity, downPath, videoUrList, TumblrEnum.BLOG_HOST);
                 } else {
                     logger.warn("未获取到视频地址  博客地址:{},iframe地址:{}", followsUrl, nextFrameUrl);
                 }
