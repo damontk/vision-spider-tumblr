@@ -41,9 +41,7 @@ public class VideoCache extends AbsCache<TumblrVideoEntity> {
     @Override
     public TumblrVideoEntity getValue(String key) {
         Map<String, String> map = cluster.hgetAll(this.genKey(key));
-        TumblrVideoEntity videoEntity = new TumblrVideoEntity();
-        new MapHelper<String>().putMapToBeans(map, videoEntity);
-        return videoEntity;
+        return new MapHelper<TumblrVideoEntity, String, String>().putMapToBeans(map, TumblrVideoEntity.class);
     }
 
     @Override
@@ -58,8 +56,7 @@ public class VideoCache extends AbsCache<TumblrVideoEntity> {
         if (CollectionUtils.isNotEmpty(allKeys)) {
             for (String key : allKeys) {
                 Map<String, String> map = cluster.hgetAll(key);
-                TumblrVideoEntity videoEntity = new TumblrVideoEntity();
-                new MapHelper<String>().putMapToBeans(map, videoEntity);
+                TumblrVideoEntity videoEntity = new MapHelper<TumblrVideoEntity, String, String>().putMapToBeans(map, TumblrVideoEntity.class);
                 videoCaches.put(key, videoEntity);
             }
 

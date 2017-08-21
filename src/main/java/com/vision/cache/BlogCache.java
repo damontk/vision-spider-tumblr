@@ -50,9 +50,8 @@ public class BlogCache extends AbsCache<TumblrBlogEntity> {
     @Override
     public TumblrBlogEntity getValue(String key) {
         Map<String, String> map = cluster.hgetAll(this.genKey(key));
-        TumblrBlogEntity blogEntity = new TumblrBlogEntity();
-        new MapHelper<String>().putMapToBeans(map, blogEntity);
-        return blogEntity;
+//        TumblrBlogEntity blogEntity = new TumblrBlogEntity();
+        return new MapHelper<TumblrBlogEntity, String, String>().putMapToBeans(map, TumblrBlogEntity.class);
     }
 
     @Override
@@ -68,8 +67,7 @@ public class BlogCache extends AbsCache<TumblrBlogEntity> {
         if (CollectionUtils.isNotEmpty(allKeys)) {
             for (String key : allKeys) {
                 Map<String, String> map = cluster.hgetAll(key);
-                TumblrBlogEntity blogEntity = new TumblrBlogEntity();
-                new MapHelper<String>().putMapToBeans(map, blogEntity);
+                TumblrBlogEntity blogEntity = new MapHelper<TumblrBlogEntity, String, String>().putMapToBeans(map, TumblrBlogEntity.class);
                 blogCaches.put(key, blogEntity);
             }
 
