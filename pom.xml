@@ -36,6 +36,7 @@
             <groupId>com.zhongc</groupId>
             <artifactId>vision-util</artifactId>
             <version>1.0</version>
+            <systemPath>${project.basedir}/libs/vision-util-1.0.jar</systemPath>
         </dependency>
         <!-- spring -->
         <dependency>
@@ -240,6 +241,7 @@
             <artifactId>guava</artifactId>
             <version>17.0</version>
         </dependency>
+
 
     </dependencies>
 
