@@ -11,9 +11,9 @@
     2. 安装redis
     3. 自备梯子 推荐shadowsocks
     配置介绍: 
-    <font color=#00ffff>proxyIp</font>代理ip 
-    <font color=#00ffff>proxyPort</font>代理端口
-    
+    proxyIp:代理ip 
+    proxyPort:代理端口
+  
 ##### 异常介绍
     1.登录失败：代理是否开启，请检查登录账户、密码是否正确，请确保所选账户是否需要人机验证。
     2.视频下载失败：判断视频是否失效。代理软件模式是否为全局代理“pac模式下可能不会代理视频地址”
