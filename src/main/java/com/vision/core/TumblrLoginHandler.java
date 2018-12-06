@@ -83,7 +83,7 @@ public class TumblrLoginHandler {
         // 解析html 获取对象参数
         Document parse = Jsoup.parse(webPage);
         Elements loginFormClass = parse.getElementsByClass(TumblrElementConstant.LOGIN_FORM_CLASS);
-        Assert.notEmpty(loginFormClass, "汤不热登录方式发生变更,如需帮助请反馈,email:uusipders@gmail.com");
+        Assert.notEmpty(loginFormClass, "汤不热登录方式发生变更,如需帮助请反馈,email:uuspiders@gmail.com");
         Element element = loginFormClass.get(0);
         Elements inputs = element.getElementsByTag("input");
         for (Element input : inputs) {
@@ -98,7 +98,7 @@ public class TumblrLoginHandler {
         //转换json
         Assert.notNull(valAccount, "用户名验证出错！tumblr未返回参数");
         JSONObject validateObj = JSON.parseObject(valAccount);
-        Assert.notNull(validateObj, "汤不热登录方式发生变更,如需帮助请反馈,email:uusipders@gmail.com");
+        Assert.notNull(validateObj, "汤不热登录方式发生变更,如需帮助请反馈,email:uuspiders@gmail.com");
         JSONArray errors = (JSONArray) validateObj.get(TumblrElementConstant.ERRORS);
         // 如果返回参数有 errors 为 并且不为空 说明用户名验证出错  用户名不存在
         if (CollectionUtils.isNotEmpty(errors)) {

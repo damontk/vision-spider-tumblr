@@ -11,7 +11,7 @@ import javax.annotation.Resource;
  * @Filename RedisMq.java
  * <p>
  * Description
- * @Email uusipders@gmail.com
+ * @Email uuspiders@gmail.com
  * @History <li>Author: zhongc</li>
  * <li>Date: 2017/1/17</li>
  * <li>Version: 1.0</li>

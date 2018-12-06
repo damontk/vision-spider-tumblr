@@ -33,7 +33,7 @@ public class BlogCache extends AbsCache<TumblrBlogEntity> {
     @Resource
     private RedisDao cluster;
 
-    private static final String BLOG_CACHE = "tumblr:blog:cache:";
+    private static final String BLOG_CACHE = "tumblr.blog.cache.";
 
     // @PostConstruct
     // public BlogCache(JedisPool jedisPool) {
