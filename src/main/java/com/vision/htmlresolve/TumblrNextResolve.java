@@ -36,7 +36,7 @@ import java.util.Set;
  * @Filename TumblrNextResolve.java
  * <p>
  * Description
- * @Email zhong_ch@foxmail.com
+ * @Email uusipders@gmail.com
  * @History <li>Author: zhongc</li>
  * <li>Date: 2017/1/15</li>
  * <li>Version: 1.0</li>

@@ -61,21 +61,21 @@ public class TumblrStart extends Thread {
         tumblrLoginHandler.TumblrLogin(userName, pwd, cookiePath);
         // 登录成功 获取该账户的关注列表
         try {
-            // logger.info("登陆成功 获取关注列表...");
-            // tumblrNextResolve.getBlogUrlSet("userName", TumblrEnum.LOGIN_FOlLOW);
-            // // logger.info("获取关注列表结束");
-            // logger.info("获取喜欢列表...");
-            // Set<String> likedVideoSet = tumblrNextResolve.getLikedVideoSet(null, TumblrEnum.LOGIN_LIKE);
-            // TumblrBlogEntity entity = new TumblrBlogEntity();
-            // entity.setBlogName("loginUser");
-            // entity.setUrl(TumblrUrlConstant.TUMBLR_HOST);
-            // tumblrNextResolve.dealVideo(entity, downPath, likedVideoSet, TumblrEnum.HOST);
-            // logger.info("获取喜欢列表结束....");
-            // 本博客爬完 开始爬取其它博客列表
+             logger.info("登陆成功 获取关注列表...");
+             tumblrNextResolve.getBlogUrlSet("userName", TumblrEnum.LOGIN_FOlLOW);
+             // logger.info("获取关注列表结束");
+             logger.info("获取喜欢列表...");
+             Set<String> likedVideoSet = tumblrNextResolve.getLikedVideoSet(null, TumblrEnum.LOGIN_LIKE);
+             TumblrBlogEntity entity = new TumblrBlogEntity();
+             entity.setBlogName("loginUser");
+             entity.setUrl(TumblrUrlConstant.TUMBLR_HOST);
+             tumblrNextResolve.dealVideo(entity, downPath, likedVideoSet, TumblrEnum.HOST);
+             logger.info("获取喜欢列表结束....");
+//             本博客爬完 开始爬取其它博客列表
             int count = 0;
             while (true) {
 
-                // String oneBlogUrl = redisMqGet.getOneBlogUrl();
+                 String oneBlogUrl = redisMqGet.getOneBlogUrl();
                 // String oneBlogUrl = "https://ziwei-ziwei.tumblr.com/";
                 // String oneBlogUrl = "https://fuckthisallday.tumblr.com/";
                 // String oneBlogUrl = "http://hotcumisyum.tumblr.com/";//欧美
@@ -113,18 +113,18 @@ public class TumblrStart extends Thread {
 
 
                 // String oneBlogUrl = redisMqGet.getOneBlogUrl();
-                String oneBlogUrl = "https://mingzzi-bozi.tumblr.com";
+//                String oneBlogUrl = "https://mingzzi-bozi.tumblr.com";
                 if (oneBlogUrl == null) {
                     logger.warn("不存在下载博客地址....休眠1分钟");
                     count++;
                     try {
                         Thread.sleep(count * 60);
-                    } catch (Exception e) {
+                    } catch (InterruptedException e) {
                         logger.error("睡眠失败:{}", e);
                     }
                 } else {
                     logger.info("获取到博客地址 开始请求... url:{}", oneBlogUrl);
-                    blogStart.start("https://tumb-korea-sexy44.tumblr.com", downPath);
+                    blogStart.archiveStart("https://tumb-korea-sexy44.tumblr.com", downPath);
                 }
                 // break;
             }
@@ -161,9 +161,4 @@ public class TumblrStart extends Thread {
     // public void setBlogStart(BlogStart blogStart) {
     //     this.blogStart = blogStart;
     // }
-
-    public static void main(String[] args) {
-        String followsUrl = "http://paytonm7.tumblr.com/";
-        String blogName = followsUrl.substring(followsUrl.indexOf("://") + 3, followsUrl.lastIndexOf(".tumblr"));
-    }
 }

@@ -33,7 +33,7 @@ import java.util.Set;
  * 3. 获取当前博客的follow
  *
  * @author zhongc
- *         email: zhong_ch@foxmail.com
+ *         email: uusipders@gmail.com
  *         History <li>Author: zhongc</li>
  *         <li>Date: 2017/1/15</li>
  *         <li>Version: 1.0</li>

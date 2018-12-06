@@ -30,7 +30,7 @@ public class VideoCache extends AbsCache<TumblrVideoEntity> {
     @Resource
     private RedisDao cluster;
 
-    static final String VIDEO_CACHE = "tumblr:video:cache:";
+    static final String VIDEO_CACHE = "tumblr.videocache";
 
 
     @Override
